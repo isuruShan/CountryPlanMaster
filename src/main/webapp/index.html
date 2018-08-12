@@ -1,0 +1,204 @@
+<html>
+
+<head>
+    <title>AngularJS Directives</title>
+    <script src = "./js/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+<!--<div class="container">-->
+
+
+    <!--<div ng-app = "" ng-init = "districts = [{id:'1',name:'Colombo', sec:'Nihal Jayathissa'}, {id:'2',name:'Gampaha', sec:'Kamal Gunarathne'}, {id:'3',name:'Kaluthara', sec:'Samantha Samarasignhe'}]">-->
+
+    <!--</div>-->
+<!--</div>-->
+
+<script type="text/javascript">
+
+    var app = angular.module("DistrictManagement", []);
+
+    //Controller Part
+    app.controller("DistrictController", function($scope, $http) {
+
+
+        $scope.districts = [];
+        $scope.oneDistrict = [];
+        $scope.districtForm = {
+            id : -1,
+            name : "",
+            secretory : ""
+        };
+
+        //Now load the data from server
+        _refreshDistrictData();
+
+        $scope.editId = function(district1) {
+            var id = district1.id;
+            if(id > 0) {
+                $scope.districtForm.id = id;
+            }
+        }
+
+
+
+        $scope.submitDistrict = function() {
+            if($scope.districtForm.id < 0){
+                method = 'POST';
+            }
+            else {
+                method = "PUT";
+            }
+            $http({
+                method : method,
+                url : 'webapi/district/',
+                data : angular.toJson($scope.districtForm),
+                headers : {
+                    'Content-Type' : 'application/json'
+                }
+            }).then( _success, _error );
+        };
+
+
+        //HTTP GET- get district by name
+        $scope.getDistrict = function(district1) {
+
+            $http({
+                method: 'GET',
+                url: 'webapi/district/' + district1
+            }).then(function successCallback(response) {
+                $scope.oneDistrict = response.data;
+            }, function errorCallback(response) {
+                console.log(response.statusText);
+            });
+        }
+
+
+        /* Private Methods */
+        //HTTP GET- get all countries collection
+        function _refreshDistrictData() {
+
+            $http({
+                method : 'GET',
+                url : 'http://localhost:8080/webapi/district'
+            }).then(function successCallback(response) {
+                $scope.districts = response.data;
+            }, function errorCallback(response) {
+                console.log(response.statusText);
+            });
+        }
+
+        $scope.deleteDistrict = function(district) {
+            $http({
+                method : 'DELETE',
+                url : 'webapi/district/'+ district.id
+            }).then(_success, _error);
+        };
+        function _success(response) {
+            _refreshDistrictData();
+            _clearFormData()
+        }
+
+        function _error(response) {
+            console.log(response.statusText);
+            _clearFormData();
+        }
+
+        //Clear the form
+        function _clearFormData() {
+            $scope.districtForm.id = -1;
+            $scope.districtForm.countryName = "";
+            $scope.districtForm.population = "";
+
+        };
+
+    });
+</script>
+
+<div ng-app="DistrictManagement" ng-controller="DistrictController" class="container">
+    <h1>Districts</h1>
+    <p>Search By DIstrict Name</p>
+    <label for="srh-district">District Name</label>
+    <div class="form-group" style="display: inline-flex">
+        <input ng-model="srhDistrict" class="form-control" id="srh-district">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" ng-click="getDistrict(srhDistrict)">
+            Search
+        </button>
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter2" >
+            Add New
+        </button>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>District Secretory</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="district in districts">
+            <td>{{district.id}}</td>
+            <td>{{district.name}}</td>
+            <td>{{district.secretory}}</td>
+            <td>
+                <input type="button" class="btn btn-warning opt-district" id="edt-district" value="Edit" ng-click="editId(district)" data-toggle="modal" data-target="#exampleModalCenter2">
+                <input type="button" class="btn btn-danger opt-district" id="dlt-district" value="Delete" ng-click="deleteDistrict(district)">
+            </td>
+        </tr>
+        </tbody>
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLongTitle">District</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>District: {{oneDistrict.name}}</p>
+                        <p>District Secretory: {{oneDistrict.secretory}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLongTitle2">Add New District</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form ng-submit="submitDistrict()">
+                        <div class="modal-body">
+                            Name: <input class="form-control add-district" ng-model="districtForm.name">
+                            Secretory: <input class="form-control add-district" ng-model="districtForm.secretory">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </table>
+</div>
+
+</body>
+</html>

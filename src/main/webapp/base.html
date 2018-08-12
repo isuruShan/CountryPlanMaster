@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>AngularJS Directives</title>
+</head>
+
+<body>
+<h1>Sample Application</h1>
+
+<div ng-app = "" ng-init = "districts = [{id:'1',name:'Colombo', sec:'Nihal Jayathissa'}, {id:'2',name:'Gampaha', sec:'Kamal Gunarathne'}, {id:'3',name:'Kaluthara', sec:'Samantha Samarasignhe'}]">
+    <p>Enter your Name: <input type = "text" ng-model = "name"></p>
+    <p>Hello <span ng-bind = "name"></span>!</p>
+    <p>List of Countries with locale:</p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>District Secretory</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="district in districts">
+            <td>{{district.id}}</td>
+            <td>{{district.name}}</td>
+            <td>{{district.sec}}</td>
+            <td>
+                <input type="button" class="btn btn-danger opt-district" id="dlt-district" value="Delete">
+                <input type="button" class="btn btn-warning opt-district" id="edt-district" value="Edit">
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
+</body>
+</html>

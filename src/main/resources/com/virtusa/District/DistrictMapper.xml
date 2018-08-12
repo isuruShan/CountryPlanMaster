@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.virtusa.District.DistrictMapper" >
+    <resultMap id="districtResult" type="district">
+        <id property="id" column="id" />
+        <result property="name" column="name"/>
+        <result property="secretory" column="secretory"/>
+    </resultMap>
+    <select id="selectAllDistricts" resultMap="districtResult" parameterType="int">
+        SELECT * from district
+    </select>
+    <select id="selectDistrict" resultType="district" parameterType="String">
+        SELECT * from district WHERE name = #{name}
+    </select>
+    <insert id="insertDistrict" parameterType="district"  keyProperty="id" useGeneratedKeys="true">
+        INSERT into district( name,secretory) VALUES(#{name}, #{secretory})
+    </insert>
+    <update id="updateDistrict" parameterType="district">
+        UPDATE district SET name=#{name}, secretory =#{secretory} WHERE id =#{id}
+    </update>
+    <delete id="deleteDistrict" parameterType="int">
+        DELETE FROM district WHERE id =#{id}
+    </delete>
+</mapper>
