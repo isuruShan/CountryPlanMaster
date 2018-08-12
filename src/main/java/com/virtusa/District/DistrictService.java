@@ -71,10 +71,16 @@ public class DistrictService {
         districtDAO.addDistrict(district);
     }
 
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void editDistrict(District district) {
+//        districtResources.editDistrict(district);
+//    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void editDistrict(District district) {
-        districtResources.editDistrict(district);
+        districtDAO.editDistrict(district);
     }
 
 

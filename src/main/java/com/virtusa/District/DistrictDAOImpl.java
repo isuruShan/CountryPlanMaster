@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DistrictDAOImpl implements DistrictDAO {
-    public DistrictDAOImpl() {
+    DistrictDAOImpl() {
         super();
     }
 
@@ -79,6 +79,17 @@ public class DistrictDAOImpl implements DistrictDAO {
 
     @Override
     public void editDistrict(District district) {
+        SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession();
+        try{
+            session.update("com.virtusa.District.DistrictMapper.updateDistrict", district);
+            session.commit();
+        }
+        catch (Exception e){
+            System.err.print(e);
+        }
+        finally {
+            session.close();
+        }
 
     }
 }
